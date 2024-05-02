@@ -8,11 +8,13 @@ export class ProfilePage {
         this.page = page;
     }
 
+    // Opens the user profile page by clicking on the user avatar icon.
     async open() {
         await this.page.click('.hdr-user-avatar-icon-bc');
         await this.page.waitForSelector('.my-profile-info-block');
     }
 
+    // Updates user profile details. Fields are filled based on the provided data.
     async updateProfile(userData:ProfileData, password: string) {
         if (userData.firstName !== undefined) {
             await this.page.fill('input[name="first_name"]', userData.firstName);  // Selector updated to target input by name attribute
@@ -44,6 +46,7 @@ export class ProfilePage {
         await this.page.getByRole('button', { name: 'Save changes' }).click();
     }
 
+    // Reloads the page and verifies that the profile data matches the expected values.
     async checkProfileData(userData:FullProfileData) {
         await this.page.reload();
         if (userData.firstName !== undefined) {
@@ -83,53 +86,64 @@ export class ProfilePage {
         }
     }
 
+    // Checks for error messages related to authentication issues.
     async InvalidPasswordErrorChecker() {
         const locator = this.page.locator('.form-control-message-bc');
         await expect(locator).toContainText('Wrong Password');
     }
 
+    // Confirms successful profile update via a success message.
     async ProfileUpdateSuccessManager() {
         const locator = this.page.locator('.casino-popup-content');
         await expect(locator).toContainText('Personal information updated');
     }
 
+    // Navigates to the verification page.
     async OpenVerificationPage() {
         await this.page.click('.account-verified-button');
     }
 
+    // Checks the verification page content.
     async CheckVerificationPage() {
         const locator = this.page.locator('.my-profile-info-block .overlay-header');
         await expect(locator).toContainText('Verification');
     }
 
+    // Opens the deposit page.
     async OpenDepositePage() {
         await this.page.click('.bc-i-wallet');
     }
 
+    // Checks the content of the deposit page.
     async CheckDepositePage() {
         const locator = this.page.locator('.my-profile-info-block .overlay-header');
         await expect(locator).toContainText('Deposit');
     }
 
+    // Navigates to the withdrawal page.
     async OpenWithdrawalPage() {
         await this.page.click('.u-i-p-a-withdraw-bc');
     }
 
+    // Verifies the withdrawal page content.
     async CheckWithdrawalPage() {
         const locator = this.page.locator('.my-profile-info-block .overlay-header');
         await expect(locator).toContainText('Withdraw');
     }
-
+    
+    // Enters a promo code and submits it.
     async typePromoCode(code:string) {
         await this.page.fill('input[name="promoCode"]', code);
         await this.page.click('button[type="submit"]');
     }
 
+    // Checks for error messages related to promo code validation.
     async PromoCodeErrorChecker() {
         const locator = this.page.locator('.casino-popup-content');
         await expect(locator).toContainText('This promo code is no longer valid');
     }
 
+    // Updates the user password.
     async UpdatePassword(newPass: string, oldPass:string) {
         await this.page.click('a[href*="change-password"]');
         await this.page.fill('input[name="password"]', oldPass);
@@ -138,11 +152,13 @@ export class ProfilePage {
         await this.page.click('.right-aligned ');
     }
 
+    // Checks for error messages related to current password issues.
     async checkErrorMessageCurrentPassword() {
         const locator = this.page.locator('.form-control-message-bc');
         await expect(locator).toContainText('The old password is incorrect.');
     }
 
+    // Confirms successful password update.
     async passwordUpdateSuccessManager() {
         const locator = this.page.locator('.casino-popup-content');
         await expect(locator).toContainText('Password changed');
