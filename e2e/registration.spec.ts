@@ -201,29 +201,7 @@ test.describe('Registration Form Tests', () => {
             'This field must contain exactly 9 digits',
         );
     });
-    // This test is disabled because it registers a new user without any errors.
-    // test('Invalid Promo Code', async ({ regPage }) => {
-    //     await regPage.fillRegistrationForm({
-    //         email: 'user3@example.com',
-    //         password: 'ValidPassword123!',
-    //         confirmPassword: 'ValidPassword123!',
-    //         phoneNumber: '123456789',
-    //         promoCode: 'INVALIDCODE',
-    //         agreeToTerms: true
-    //     });
-    //     await regPage.checkPasswordValidation({
-    //         isRequired: true,
-    //         containsDigit: true,
-    //         noSpaces: true,
-    //         hasLowerAndUpper: true,
-    //         onlyEnglishChars: true,
-    //         minLength: true,
-    //         maxLength: true
-    //     });
-    //     await regPage.submit();
-    //     await regPage.checkErrorMessage(FieldName.PromoCode, 'Invalid promo code');
-    // });
-
+    
     test('requires agreeing to the terms and conditions', async ({ regPage }) => {
         await regPage.fillRegistrationForm({
             email: 'user3@example.com',
@@ -266,59 +244,6 @@ test.describe('Registration Form Tests', () => {
         await regPage.submit();
         await regPage.checkErrorMessage(FieldName.Email, 'Please enter a valid email address');
     });
-
-    // This test is blocked due to CAPTCHA.
-    // test('Email Already Registered', async ({ regPage }) => {
-    //     await regPage.fillRegistrationForm({
-    //         email: 'registered@example.com'
-    //     });
-    //     await regPage.submit();
-    //     await regPage.checkErrorMessage(FieldName.Email, 'Email already registered');
-    // });
-
-    // This test is blocked due to CAPTCHA.
-    // test('Phone number Already Registered', async ({ regPage }) => {
-    //     await regPage.fillRegistrationForm({
-    //         email: 'user3@example.com',
-    //         password: 'ValidPassword123!',
-    //         confirmPassword: 'ValidPassword123!',
-    //         phoneNumber: '123456789',
-    //         agreeToTerms: true
-    //     });
-    //     await regPage.checkPasswordValidation({
-    //         isRequired: true,
-    //         containsDigit: true,
-    //         noSpaces: true,
-    //         hasLowerAndUpper: true,
-    //         onlyEnglishChars: true,
-    //         minLength: true,
-    //         maxLength: true
-    //     });
-    //     await regPage.submit();
-    //     await regPage.checkErrorMessage(FieldName.PhoneNumber, 'This phone number already exists in our database. Please enter another one or try to sign in.');
-    // });
-
-    // This test is blocked due to CAPTCHA.
-    // test('Successful Registration', async ({ regPage }) => {
-    //     await regPage.fillRegistrationForm({
-    //         email: 'user3@example.com',
-    //         password: 'ValidPassword123!',
-    //         confirmPassword: 'ValidPassword123!',
-    //         phoneNumber: '353535354',
-    //         agreeToTerms: true
-    //     });
-    //     await regPage.checkPasswordValidation({
-    //         isRequired: true,
-    //         containsDigit: true,
-    //         noSpaces: true,
-    //         hasLowerAndUpper: true,
-    //         onlyEnglishChars: true,
-    //         minLength: true,
-    //         maxLength: true
-    //     });
-    //     await regPage.submit();
-    //     await regPage.checkSuccessRegistration();
-    // });
 
     test('rejects a JavaScript injection attempt in the email field', async ({ regPage }) => {
         await regPage.fillRegistrationForm({
