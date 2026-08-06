@@ -36,14 +36,14 @@ export class LoginPage {
         await expect(locator).toContainText('Invalid Username or Password');
     }
 
-    async checkForInputErrors(input: FieldNameLogin) {
+    async verifyRequiredFieldError(input: FieldNameLogin) {
         const num = input === 'email' ? 0 : 1;
         await expect(
             this.page
                 .locator(`.entrance-f-item-bc`)
                 .nth(num)
                 .locator('.form-control-message-holder-bc'),
-        ).toBeHidden();
+        ).toBeVisible();
     }
 
     async logOut() {
