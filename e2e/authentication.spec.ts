@@ -1,4 +1,4 @@
-import { test } from '../fixtures/fixture'; 
+import { test } from '../fixtures/fixture';
 import { FieldNameLogin } from '../types/Types';
 
 test.describe('Authentication Tests', () => {
@@ -10,7 +10,7 @@ test.describe('Authentication Tests', () => {
     test('Successful Login', async ({ loginPage }) => {
         await loginPage.login({
             login: userLogin,
-            password: userPassword
+            password: userPassword,
         });
         await loginPage.verifyLoginSuccess();
     });
@@ -19,7 +19,7 @@ test.describe('Authentication Tests', () => {
     test('Incorrect Password', async ({ loginPage }) => {
         await loginPage.login({
             login: userLogin,
-            password: 'wrongPassword'
+            password: 'wrongPassword',
         });
         await loginPage.AuthenticationErrorChecker();
     });
@@ -28,7 +28,7 @@ test.describe('Authentication Tests', () => {
     test('Nonexistent User', async ({ loginPage }) => {
         await loginPage.login({
             login: 'notExistUser@test.com',
-            password: userPassword
+            password: userPassword,
         });
         await loginPage.AuthenticationErrorChecker();
     });
@@ -37,7 +37,7 @@ test.describe('Authentication Tests', () => {
     test('Empty Fields (Login)', async ({ loginPage }) => {
         await loginPage.login({
             login: '',
-            password: userPassword
+            password: userPassword,
         });
         await loginPage.checkForInputErrors(FieldNameLogin.Email);
     });

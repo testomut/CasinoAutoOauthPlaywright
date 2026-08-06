@@ -1,16 +1,15 @@
 // registrationTests.ts
-import { test } from '../fixtures/fixture'; 
+import { test } from '../fixtures/fixture';
 import { FieldName } from '../types/Types';
 
 test.describe('Registration Form Tests', () => {
-
     // Test case for an empty email field.
-    test('Test Empty Email Field', async ({ regPage }) => {
-        await regPage.fillRegistrationForm({ 
-            email: '', 
-            password: 'validPassword123', 
+    test('Empty Email Field', async ({ regPage }) => {
+        await regPage.fillRegistrationForm({
+            email: '',
+            password: 'validPassword123',
             confirmPassword: 'validPassword123',
-            phoneNumber: '454534342'
+            phoneNumber: '454534342',
         });
         await regPage.checkPasswordValidation({
             isRequired: true,
@@ -19,19 +18,19 @@ test.describe('Registration Form Tests', () => {
             hasLowerAndUpper: true,
             onlyEnglishChars: true,
             minLength: true,
-            maxLength: true
+            maxLength: true,
         });
         await regPage.submit();
         await regPage.checkErrorMessage(FieldName.Email, 'This field is required');
     });
 
     // Test case to verify the behavior when the email format is invalid.
-    test('Test Invalid Email Format', async ({ regPage }) => {
+    test('Invalid Email Format', async ({ regPage }) => {
         await regPage.fillRegistrationForm({
             email: 'test@',
             password: 'ValidPassword123!',
             confirmPassword: 'ValidPassword123!',
-            phoneNumber: '123456789'
+            phoneNumber: '123456789',
         });
         await regPage.checkPasswordValidation({
             isRequired: true,
@@ -40,19 +39,19 @@ test.describe('Registration Form Tests', () => {
             hasLowerAndUpper: true,
             onlyEnglishChars: true,
             minLength: true,
-            maxLength: true
+            maxLength: true,
         });
         await regPage.submit();
         await regPage.checkErrorMessage(FieldName.Email, 'Please enter a valid email address');
     });
 
     // Test case to verify the behavior when the password field is left empty.
-    test('Test Empty Password Field', async ({ regPage }) => {
+    test('Empty Password Field', async ({ regPage }) => {
         await regPage.fillRegistrationForm({
             email: 'user3@example.com',
             password: '',
             confirmPassword: '',
-            phoneNumber: '123456789'
+            phoneNumber: '123456789',
         });
         await regPage.checkPasswordValidation({
             isRequired: false,
@@ -61,7 +60,7 @@ test.describe('Registration Form Tests', () => {
             hasLowerAndUpper: false,
             onlyEnglishChars: false,
             minLength: false,
-            maxLength: false
+            maxLength: false,
         });
         await regPage.submit();
         await regPage.checkErrorMessage(FieldName.RepeatPassword, 'This field is required');
@@ -81,10 +80,13 @@ test.describe('Registration Form Tests', () => {
             hasLowerAndUpper: false,
             onlyEnglishChars: false,
             minLength: false,
-            maxLength: false
+            maxLength: false,
         });
         await regPage.submit();
-        await regPage.checkErrorMessage(FieldName.RepeatPassword, 'Password should contain at least 6 characters.');
+        await regPage.checkErrorMessage(
+            FieldName.RepeatPassword,
+            'Password should contain at least 6 characters.',
+        );
     });
 
     // Test case to verify the behavior when the password exceeds the maximum length.
@@ -101,7 +103,7 @@ test.describe('Registration Form Tests', () => {
             hasLowerAndUpper: true,
             onlyEnglishChars: false,
             minLength: false,
-            maxLength: false
+            maxLength: false,
         });
         await regPage.submit();
         await regPage.checkErrorMessage(FieldName.RepeatPassword, `Too long`);
@@ -121,7 +123,7 @@ test.describe('Registration Form Tests', () => {
             hasLowerAndUpper: true,
             onlyEnglishChars: true,
             minLength: true,
-            maxLength: true
+            maxLength: true,
         });
     });
 
@@ -139,7 +141,7 @@ test.describe('Registration Form Tests', () => {
             hasLowerAndUpper: false,
             onlyEnglishChars: false,
             minLength: false,
-            maxLength: false
+            maxLength: false,
         });
     });
 
@@ -157,7 +159,7 @@ test.describe('Registration Form Tests', () => {
             hasLowerAndUpper: false,
             onlyEnglishChars: true,
             minLength: true,
-            maxLength: true
+            maxLength: true,
         });
     });
 
@@ -175,7 +177,7 @@ test.describe('Registration Form Tests', () => {
             hasLowerAndUpper: true,
             onlyEnglishChars: true,
             minLength: true,
-            maxLength: true
+            maxLength: true,
         });
         await regPage.submit();
         await regPage.checkErrorMessage(FieldName.RepeatPassword, `Passwords don't match`);
@@ -187,7 +189,7 @@ test.describe('Registration Form Tests', () => {
             email: 'user3@example.com',
             password: 'ValidPassword123!',
             confirmPassword: 'ValidPassword123!',
-            phoneNumber: '1234567890123123'
+            phoneNumber: '1234567890123123',
         });
         await regPage.checkPasswordValidation({
             isRequired: true,
@@ -196,10 +198,13 @@ test.describe('Registration Form Tests', () => {
             hasLowerAndUpper: true,
             onlyEnglishChars: true,
             minLength: true,
-            maxLength: true
+            maxLength: true,
         });
         await regPage.submit();
-        await regPage.checkErrorMessage(FieldName.PhoneNumber, 'This field must contain exactly 9 digits');
+        await regPage.checkErrorMessage(
+            FieldName.PhoneNumber,
+            'This field must contain exactly 9 digits',
+        );
     });
     // This test is disabled because it registers a new user without any errors.
     // test('Invalid Promo Code', async ({ regPage }) => {
@@ -223,7 +228,7 @@ test.describe('Registration Form Tests', () => {
     //     await regPage.submit();
     //     await regPage.checkErrorMessage(FieldName.PromoCode, 'Invalid promo code');
     // });
-    
+
     // Ensures that user cannot proceed with registration if not agreed to the terms and conditions.
     test('Unchecked Terms and Conditions', async ({ regPage }) => {
         await regPage.fillRegistrationForm({
@@ -231,14 +236,17 @@ test.describe('Registration Form Tests', () => {
             password: 'ValidPassword123!',
             confirmPassword: 'ValidPassword123!',
             phoneNumber: '123456789',
-            agreeToTerms: false  
+            agreeToTerms: false,
         });
         await regPage.submit();
-        await regPage.checkErrorMessage(FieldName.Agree, 'You should agree with terms and conditions to continue');
+        await regPage.checkErrorMessage(
+            FieldName.Agree,
+            'You should agree with terms and conditions to continue',
+        );
     });
 
     // Tests the scenario where the password contains only special characters.
-    test('Test Password with Only Special Characters', async ({ regPage }) => {
+    test('Password with Only Special Characters', async ({ regPage }) => {
         await regPage.fillRegistrationForm({
             email: 'user3@example.com',
             password: '!@#$%^&*()',
@@ -252,14 +260,14 @@ test.describe('Registration Form Tests', () => {
             hasLowerAndUpper: false,
             onlyEnglishChars: true,
             minLength: true,
-            maxLength: true
+            maxLength: true,
         });
     });
 
     // Tests the prevention of Cross-Site Scripting (XSS) attacks by entering a script in the email field.
     test('Cross-Site Scripting (XSS) Attack Prevention', async ({ regPage }) => {
         await regPage.fillRegistrationForm({
-            email: "<script>alert('test')</script>"
+            email: "<script>alert('test')</script>",
         });
         await regPage.submit();
         await regPage.checkErrorMessage(FieldName.Email, 'Please enter a valid email address');
@@ -319,9 +327,9 @@ test.describe('Registration Form Tests', () => {
     // });
 
     // Tests the prevention of JavaScript injection in the email field by entering a string containing JavaScript code.
-    test('Test JavaScript Injection in Email Field', async ({ regPage }) => {
+    test('JavaScript Injection in Email Field', async ({ regPage }) => {
         await regPage.fillRegistrationForm({
-            email: `" onmouseover="alert('JavaScript Executed!')`
+            email: `" onmouseover="alert('JavaScript Executed!')`,
         });
         await regPage.submit();
         await regPage.checkErrorMessage(FieldName.Email, 'Please enter a valid email address');

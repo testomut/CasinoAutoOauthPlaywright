@@ -1,4 +1,4 @@
-import { test } from '../fixtures/fixture'; 
+import { test } from '../fixtures/fixture';
 import { ProfileData } from '../types/Types';
 import { faker } from '@faker-js/faker';
 
@@ -9,35 +9,35 @@ test.describe('Profile Tests', () => {
 
     // Tests failure to update profile data with an incorrect password
     test('fails to update profile data with incorrect password', async ({ profilePage }) => {
-        const userData:ProfileData = {
-            firstName: faker.person.firstName(), 
+        const userData: ProfileData = {
+            firstName: faker.person.firstName(),
             lastName: faker.person.lastName(),
             birthDate: '14.05.1985',
             gender: 'Male',
             documentNumber: faker.string.numeric(7),
             taxNumber: faker.string.numeric(10),
-        }
+        };
         await profilePage.updateProfile(userData, 'incorrextPassword');
         await profilePage.InvalidPasswordErrorChecker();
     });
 
     // Tests successful update of profile data with the correct password
     test('successfully updates profile data with correct password', async ({ profilePage }) => {
-        const userData:ProfileData = {
-            firstName: faker.person.firstName(), 
+        const userData: ProfileData = {
+            firstName: faker.person.firstName(),
             lastName: faker.person.lastName(),
             birthDate: '14.05.1985',
             gender: 'Male',
             documentNumber: faker.string.numeric(7),
             taxNumber: faker.string.numeric(10),
-        }
+        };
         await profilePage.updateProfile(userData, userPassword);
         await profilePage.ProfileUpdateSuccessManager();
         const constDataUser = {
             email: userLogin,
-            phone: userPhone
-        }
-        await profilePage.checkProfileData({...userData,...constDataUser});
+            phone: userPhone,
+        };
+        await profilePage.checkProfileData({ ...userData, ...constDataUser });
     });
 
     // Verifies the functionality of the 'Verify Now' button
@@ -66,7 +66,7 @@ test.describe('Profile Tests', () => {
 
     // Attempts to change the password using an incorrect current password
     test('attempts to change password with incorrect current password', async ({ profilePage }) => {
-        await profilePage.UpdatePassword('REDACTED_PASSWORD','WrongPass12');
+        await profilePage.UpdatePassword('REDACTED_PASSWORD', 'WrongPass12');
         await profilePage.checkErrorMessageCurrentPassword();
     });
 

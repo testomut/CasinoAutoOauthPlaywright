@@ -1,19 +1,42 @@
 {
-  "name": "casino-oauth-playwright-iests",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {},
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@faker-js/faker": "^8.4.1",
-    "@playwright/test": "^1.43.1",
-    "@types/jest": "^29.5.12",
-    "@types/node": "^20.12.7"
-  },
-  "dependencies": {
-    "dotenv": "^16.4.5"
-  }
+    "name": "casino-playwright-authentication-tests",
+    "version": "1.0.0",
+    "description": "Playwright reference project covering registration, authentication, and profile-management flows for a live casino site.",
+    "license": "MIT",
+    "author": "Stanislav Mokshyn <https://github.com/testomut>",
+    "keywords": [
+        "playwright",
+        "typescript",
+        "test-automation",
+        "authentication-testing",
+        "page-object-model"
+    ],
+    "engines": {
+        "node": ">=20"
+    },
+    "scripts": {
+        "test": "playwright test",
+        "test:headed": "playwright test --headed",
+        "test:debug": "playwright test --debug",
+        "test:ui": "playwright test --ui",
+        "test:report": "playwright show-report",
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix",
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
+        "typecheck": "tsc --noEmit"
+    },
+    "devDependencies": {
+        "@eslint/js": "^10.0.1",
+        "@faker-js/faker": "^8.4.1",
+        "@playwright/test": "^1.62.1",
+        "@types/node": "^20.12.7",
+        "dotenv": "^16.4.5",
+        "eslint": "^10.8.0",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-plugin-playwright": "^2.11.0",
+        "prettier": "^3.9.6",
+        "typescript": "~6.0.3",
+        "typescript-eslint": "^8.66.0"
+    }
 }

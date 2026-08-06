@@ -15,39 +15,41 @@ export class ProfilePage {
     }
 
     // Updates user profile details. Fields are filled based on the provided data.
-    async updateProfile(userData:ProfileData, password: string) {
+    async updateProfile(userData: ProfileData, password: string) {
         if (userData.firstName !== undefined) {
-            await this.page.fill('input[name="first_name"]', userData.firstName);  // Selector updated to target input by name attribute
+            await this.page.fill('input[name="first_name"]', userData.firstName); // Selector updated to target input by name attribute
         }
         if (userData.lastName !== undefined) {
-            await this.page.fill('input[name="last_name"]', userData.lastName);  // Selector updated to target input by name attribute
+            await this.page.fill('input[name="last_name"]', userData.lastName); // Selector updated to target input by name attribute
         }
         if (userData.birthDate !== undefined) {
             await this.page.evaluate(() => {
-                const dateInput = document.querySelector('[placeholder].form-control-input-bc') as Element;
+                const dateInput = document.querySelector(
+                    '[placeholder].form-control-input-bc',
+                ) as Element;
                 dateInput.removeAttribute('readonly');
             });
-            await this.page.fill('input[placeholder].form-control-input-bc', userData.birthDate);  // Selector updated to target input by name attribute
+            await this.page.fill('input[placeholder].form-control-input-bc', userData.birthDate); // Selector updated to target input by name attribute
         }
         if (userData.gender !== undefined) {
             await this.page.getByText('Choose gender').click();
             const labelLocator = this.page.locator('label').filter({
-                hasText: new RegExp(`^${userData.gender}$`)
+                hasText: new RegExp(`^${userData.gender}$`),
             });
             await labelLocator.click();
         }
         if (userData.documentNumber !== undefined) {
-            await this.page.fill('input[name="doc_number"]', userData.documentNumber);  // Selector updated to target input by name attribute
+            await this.page.fill('input[name="doc_number"]', userData.documentNumber); // Selector updated to target input by name attribute
         }
         if (userData.taxNumber !== undefined) {
-            await this.page.fill('input[name="iban"]', userData.taxNumber);  // Selector updated to target input by name attribute
+            await this.page.fill('input[name="iban"]', userData.taxNumber); // Selector updated to target input by name attribute
         }
         await this.page.fill('input[name="password"]', password);
         await this.page.getByRole('button', { name: 'Save changes' }).click();
     }
 
     // Reloads the page and verifies that the profile data matches the expected values.
-    async checkProfileData(userData:FullProfileData) {
+    async checkProfileData(userData: FullProfileData) {
         await this.page.reload();
         if (userData.firstName !== undefined) {
             const locator = this.page.locator('input[name="first_name"]');
@@ -59,13 +61,13 @@ export class ProfilePage {
         }
         if (userData.birthDate !== undefined) {
             const birthSplit = userData.birthDate.split('.');
-            const newBirthDateFormat = `${birthSplit[2]}-${birthSplit[1]}-${birthSplit[0]}`
+            const newBirthDateFormat = `${birthSplit[2]}-${birthSplit[1]}-${birthSplit[0]}`;
             const locator = this.page.locator('input[name="birth_date"]');
             await expect(locator).toHaveValue(newBirthDateFormat);
         }
         if (userData.gender !== undefined) {
             const locator = this.page.locator('.multi-select-bc .form-control-select-bc');
-            await expect(locator).toContainText(userData.gender)
+            await expect(locator).toContainText(userData.gender);
         }
         if (userData.documentNumber !== undefined) {
             const locator = this.page.locator('input[name="doc_number"]');
@@ -79,7 +81,7 @@ export class ProfilePage {
             const locator = this.page.locator('input[name="email"]');
             await expect(locator).toHaveValue(userData.email);
         }
-    
+
         if (userData.phone !== undefined) {
             const locator = this.page.locator('input[name="phoneNumber"]');
             await expect(locator).toHaveValue(userData.phone);
@@ -130,9 +132,9 @@ export class ProfilePage {
         const locator = this.page.locator('.my-profile-info-block .overlay-header');
         await expect(locator).toContainText('Withdraw');
     }
-    
+
     // Enters a promo code and submits it.
-    async typePromoCode(code:string) {
+    async typePromoCode(code: string) {
         await this.page.fill('input[name="promoCode"]', code);
         await this.page.click('button[type="submit"]');
     }
@@ -144,7 +146,7 @@ export class ProfilePage {
     }
 
     // Updates the user password.
-    async UpdatePassword(newPass: string, oldPass:string) {
+    async UpdatePassword(newPass: string, oldPass: string) {
         await this.page.click('a[href*="change-password"]');
         await this.page.fill('input[name="password"]', oldPass);
         await this.page.fill('input[name="new_password"]', newPass);

@@ -10,7 +10,7 @@ export class LoginPage {
 
     // Opens the login page and clicks the sign-in button.
     async open() {
-        await this.page.goto('https://www.vbet.ua/en/');
+        await this.page.goto('/en/');
         await this.page.locator('.sign-in').click();
     }
 
@@ -23,15 +23,19 @@ export class LoginPage {
 
     // Closes the verification popup and waits for the user avatar to be visible, indicating login is successful.
     async closePopUpCompleteVerification() {
-        await this.page.click('div:nth-child(7) > .popup-middleware-bc > .popup-inner-bc > .e-p-close-icon-bc');
+        await this.page.click(
+            'div:nth-child(7) > .popup-middleware-bc > .popup-inner-bc > .e-p-close-icon-bc',
+        );
         await this.page.waitForSelector('.hdr-user-avatar-icon-bc');
     }
 
     // Verifies if the login success message is displayed and closes the popup.
     async verifyLoginSuccess() {
         const locator = this.page.locator('.casino-popup-content');
-        await expect(locator).toContainText('Before betting, complete verification. Verify your account with Diia, BankID or use the quick verification form. You can upload an additional document in the personal cabinet.');
-        this.closePopUpCompleteVerification();
+        await expect(locator).toContainText(
+            'Before betting, complete verification. Verify your account with Diia, BankID or use the quick verification form. You can upload an additional document in the personal cabinet.',
+        );
+        await this.closePopUpCompleteVerification();
     }
 
     // Checks for the authentication error message when login fails.
@@ -42,8 +46,13 @@ export class LoginPage {
 
     // Checks for input errors based on the field name, distinguishing between email and password fields.
     async checkForInputErrors(input: FieldNameLogin) {
-        const num = input === "email" ? 0 : 1;
-        await expect(this.page.locator(`.entrance-f-item-bc`).nth(num).locator('.form-control-message-holder-bc').isHidden).toBeTruthy;
+        const num = input === 'email' ? 0 : 1;
+        await expect(
+            this.page
+                .locator(`.entrance-f-item-bc`)
+                .nth(num)
+                .locator('.form-control-message-holder-bc'),
+        ).toBeHidden();
     }
 
     // Logs out the user and closes the verification popup if it's open.
@@ -55,7 +64,7 @@ export class LoginPage {
 
     // Validates that the user is logged out by checking that the user avatar is hidden.
     async LogoutValidator() {
-        await expect(this.page.locator('.hdr-user-avatar-icon-bc').isHidden).toBeTruthy;
+        await expect(this.page.locator('.hdr-user-avatar-icon-bc')).toBeHidden();
     }
 
     // Initiates the password reset process.
@@ -73,6 +82,6 @@ export class LoginPage {
 
     // Checks if there are any visible error messages after a failed password reset attempt.
     async resetPasswordFailureCheck() {
-        await expect(this.page.locator('.form-control-message-bc').isHidden).toBeTruthy;
+        await expect(this.page.locator('.form-control-message-bc')).toBeHidden();
     }
 }

@@ -11,7 +11,7 @@ export class RegistrationPage {
 
     // Opens the registration page and waits for the registration popup to become visible.
     async open() {
-        await this.page.goto('https://www.vbet.ua/en/');
+        await this.page.goto('/en/');
         await this.page.locator('.register').click();
         await this.page.locator('.entrance-popup-bc.register').waitFor();
     }
@@ -34,28 +34,33 @@ export class RegistrationPage {
             await this.page.fill('input[name="promo_code"]', data.promoCode);
         }
         // Handles the checkbox interaction based on user agreement.
-        const ifMarkedCheckbox = await this.page.locator('.checkbox-control-bc .form-control-message-holder-bc').isHidden();
-        
-        if ((data.agreeToTerms === true && !ifMarkedCheckbox) || (data.agreeToTerms === false && ifMarkedCheckbox) ) {
+        const ifMarkedCheckbox = await this.page
+            .locator('.checkbox-control-bc .form-control-message-holder-bc')
+            .isHidden();
+
+        if (
+            (data.agreeToTerms === true && !ifMarkedCheckbox) ||
+            (data.agreeToTerms === false && ifMarkedCheckbox)
+        ) {
             await this.page.locator('.checkbox-control-icon-bc').click();
         }
     }
 
     // Clicks the submit button to attempt registering the user.
     async submit() {
-        await this.page.click('button[type="submit"]');  // More specific selector for submit button
+        await this.page.click('button[type="submit"]'); // More specific selector for submit button
     }
 
     // Checks for error messages associated with specific fields in the registration form.
     async checkErrorMessage(field: FieldName, errorMessage: string) {
         let messageSelector = `.form-control-bc:has(input[name="${field}"]) .form-control-message-holder-bc .form-control-message-bc`;
-        if(field === FieldName.PhoneNumber) {
+        if (field === FieldName.PhoneNumber) {
             messageSelector = `.form-controls-group-bc.telephone .form-control-message-holder-bc .form-control-message-bc`;
         }
-        if(field === FieldName.Agree) {
+        if (field === FieldName.Agree) {
             messageSelector = `.checkbox-control-bc .form-control-message-bc`;
         }
-        if(field === FieldName.Password) {
+        if (field === FieldName.Password) {
             await this.page.locator('input[name="phoneNumber"]').scrollIntoViewIfNeeded();
         }
         await this.page.waitForSelector(messageSelector);
@@ -65,30 +70,65 @@ export class RegistrationPage {
     // Validates password according to the specified criteria in the PasswordValidation interface.
     async checkPasswordValidation(verificationList: PasswordValidation) {
         const requiredClass = verificationList.isRequired ? '.bc-i-checked' : '.invalid';
-        await expect(this.page.locator('.validation-check-info:has-text("This field is required")').locator(requiredClass).isHidden).toBeTruthy;
-        
-        const noSpacesClass = verificationList.noSpaces ? 'bc-i-checked' : 'invalid';
-        await expect(this.page.locator('.validation-check-info:has-text("Password should contain at least one digit. ")').locator(requiredClass).isHidden).toBeTruthy;
-      
-        
-        const onlyEnglishCharsClass = verificationList.onlyEnglishChars ? 'bc-i-checked' : 'invalid';
-        await expect(this.page.locator('.validation-check-info:has-text("Password should not contain any spaces.")').locator(requiredClass).isHidden).toBeTruthy;
-      
-        
-        const containsDigitClass = verificationList.containsDigit ? 'bc-i-checked' : 'invalid';
-        await expect(this.page.locator('.validation-check-info:has-text("Password should contain lower and upper characters.")').locator(requiredClass).isHidden).toBeTruthy;
-      
-        
-        const hasLowerAndUpperClass = verificationList.hasLowerAndUpper ? 'bc-i-checked' : 'invalid';
-        await expect(this.page.locator('.validation-check-info:has-text("Password should contain only English characters. ")').locator(requiredClass).isHidden).toBeTruthy;
-      
-        
-        const minLengthClass = verificationList.minLength ? 'bc-i-checked' : 'invalid';
-        await expect(this.page.locator('.validation-check-info:has-text("Password minimal length 8")').locator(requiredClass).isHidden).toBeTruthy;
-      
-        
-        const maxLengthClass = verificationList.maxLength ? 'bc-i-checked' : 'invalid';
-        await expect(this.page.locator('.validation-check-info:has-text("Password maximal length 50")').locator(requiredClass).isHidden).toBeTruthy;
+        await expect(
+            this.page
+                .locator('.validation-check-info:has-text("This field is required")')
+                .locator(requiredClass),
+        ).toBeHidden();
+
+        const containsDigitClass = verificationList.containsDigit ? '.bc-i-checked' : '.invalid';
+        await expect(
+            this.page
+                .locator(
+                    '.validation-check-info:has-text("Password should contain at least one digit. ")',
+                )
+                .locator(containsDigitClass),
+        ).toBeHidden();
+
+        const noSpacesClass = verificationList.noSpaces ? '.bc-i-checked' : '.invalid';
+        await expect(
+            this.page
+                .locator(
+                    '.validation-check-info:has-text("Password should not contain any spaces.")',
+                )
+                .locator(noSpacesClass),
+        ).toBeHidden();
+
+        const hasLowerAndUpperClass = verificationList.hasLowerAndUpper
+            ? '.bc-i-checked'
+            : '.invalid';
+        await expect(
+            this.page
+                .locator(
+                    '.validation-check-info:has-text("Password should contain lower and upper characters.")',
+                )
+                .locator(hasLowerAndUpperClass),
+        ).toBeHidden();
+
+        const onlyEnglishCharsClass = verificationList.onlyEnglishChars
+            ? '.bc-i-checked'
+            : '.invalid';
+        await expect(
+            this.page
+                .locator(
+                    '.validation-check-info:has-text("Password should contain only English characters. ")',
+                )
+                .locator(onlyEnglishCharsClass),
+        ).toBeHidden();
+
+        const minLengthClass = verificationList.minLength ? '.bc-i-checked' : '.invalid';
+        await expect(
+            this.page
+                .locator('.validation-check-info:has-text("Password minimal length 8")')
+                .locator(minLengthClass),
+        ).toBeHidden();
+
+        const maxLengthClass = verificationList.maxLength ? '.bc-i-checked' : '.invalid';
+        await expect(
+            this.page
+                .locator('.validation-check-info:has-text("Password maximal length 50")')
+                .locator(maxLengthClass),
+        ).toBeHidden();
     }
 
     // Verifies that registration was successful by checking for a congratulatory message.
