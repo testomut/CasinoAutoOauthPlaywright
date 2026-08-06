@@ -37,11 +37,12 @@ export class LoginPage {
     }
 
     async verifyRequiredFieldError(input: FieldNameLogin) {
-        const num = input === 'email' ? 0 : 1;
+        // The login form's fields are named "username" and "password" in the
+        // DOM - FieldNameLogin.Email refers to the login/username field.
+        const fieldAttributeName = input === FieldNameLogin.Email ? 'username' : 'password';
         await expect(
             this.page
-                .locator(`.entrance-f-item-bc`)
-                .nth(num)
+                .locator(`.entrance-f-item-bc:has(input[name="${fieldAttributeName}"])`)
                 .locator('.form-control-message-holder-bc'),
         ).toBeVisible();
     }
@@ -67,7 +68,10 @@ export class LoginPage {
         await expect(locator).toContainText('Password reset complete. Please check your email.');
     }
 
-    async verifyPasswordResetFailure() {
+    // Confirms the form shows no field-level error for an unregistered email -
+    // it doesn't confirm a generic success confirmation is also shown, since
+    // that hasn't been verified against the live application.
+    async verifyNoAccountDisclosure() {
         await expect(this.page.locator('.form-control-message-bc')).toBeHidden();
     }
 }

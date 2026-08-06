@@ -201,7 +201,7 @@ test.describe('Registration Form Tests', () => {
             'This field must contain exactly 9 digits',
         );
     });
-    
+
     test('requires agreeing to the terms and conditions', async ({ regPage }) => {
         await regPage.fillRegistrationForm({
             email: 'user3@example.com',

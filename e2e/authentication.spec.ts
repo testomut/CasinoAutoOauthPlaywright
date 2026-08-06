@@ -55,6 +55,6 @@ test.describe('Authentication Tests', () => {
         loginPage,
     }) => {
         await loginPage.resetPassword('wrongEmail@qweqwe.com');
-        await loginPage.verifyPasswordResetFailure();
+        await loginPage.verifyNoAccountDisclosure();
     });
 });
