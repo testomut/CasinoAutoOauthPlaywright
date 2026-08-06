@@ -38,7 +38,7 @@ test.describe('Authentication Tests', () => {
             login: '',
             password: userPassword,
         });
-        await loginPage.checkForInputErrors(FieldNameLogin.Email);
+        await loginPage.verifyRequiredFieldError(FieldNameLogin.Email);
     });
 
     test('logs the user out and returns to the unauthenticated state', async ({ loggedInPage }) => {
