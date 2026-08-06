@@ -3,17 +3,15 @@ import { test as baseTest, Page } from '@playwright/test';
 import { RegistrationPage } from '../page-object/RegistrationPage';
 import { LoginPage } from '../page-object/LoginPage';
 import { ProfilePage } from '../page-object/ProfilePage';
+import { requireEnv } from '../config/env';
 
-const userLogin = process.env.USERNAME_VBET as string;
-const userPassword = process.env.PASSWORD_VBET as string;
-
-// Helper function to perform login
 async function loginUser(page: Page) {
+    const { USERNAME_VBET, PASSWORD_VBET } = requireEnv('USERNAME_VBET', 'PASSWORD_VBET');
     const loginPage = new LoginPage(page);
     await loginPage.open();
     await loginPage.login({
-        login: userLogin,
-        password: userPassword,
+        login: USERNAME_VBET,
+        password: PASSWORD_VBET,
     });
     await loginPage.closePopUpCompleteVerification();
 }
@@ -35,11 +33,11 @@ export const test = baseTest.extend<{
         await use(loginPage);
     },
     loggedInPage: async ({ page }, use) => {
-        await loginUser(page); // Use helper function to login
+        await loginUser(page);
         await use(new LoginPage(page));
     },
     profilePage: async ({ page }, use) => {
-        await loginUser(page); // Use helper function to login
+        await loginUser(page);
         const profilePage = new ProfilePage(page);
         await profilePage.open();
         await use(profilePage);

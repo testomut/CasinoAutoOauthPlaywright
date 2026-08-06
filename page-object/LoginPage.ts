@@ -39,7 +39,7 @@ export class LoginPage {
     }
 
     // Checks for the authentication error message when login fails.
-    async AuthenticationErrorChecker() {
+    async checkAuthenticationError() {
         const locator = this.page.locator('.entrance-f-error-message-bc');
         await expect(locator).toContainText('Invalid Username or Password');
     }
@@ -63,7 +63,7 @@ export class LoginPage {
     }
 
     // Validates that the user is logged out by checking that the user avatar is hidden.
-    async LogoutValidator() {
+    async verifyLogout() {
         await expect(this.page.locator('.hdr-user-avatar-icon-bc')).toBeHidden();
     }
 

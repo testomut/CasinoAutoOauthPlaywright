@@ -48,7 +48,7 @@ export class RegistrationPage {
 
     // Clicks the submit button to attempt registering the user.
     async submit() {
-        await this.page.click('button[type="submit"]'); // More specific selector for submit button
+        await this.page.click('button[type="submit"]');
     }
 
     // Checks for error messages associated with specific fields in the registration form.
