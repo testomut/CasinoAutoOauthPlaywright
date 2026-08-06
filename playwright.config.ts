@@ -7,8 +7,8 @@ export default defineConfig({
     expect: {
         timeout: 5000,
     },
-    // false: profile.spec.ts mutates the real account's password mid-suite,
-    // and later tests depend on that change - the file is order-dependent.
+    // false: every spec here runs against the same real, shared account -
+    // concurrent runs could race on the same profile/session state.
     fullyParallel: false,
     forbidOnly: !!process.env.CI,
     retries: process.env.CI ? 2 : 0,

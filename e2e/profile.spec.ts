@@ -1,14 +1,18 @@
 import { test } from '../fixtures/fixture';
 import { ProfileData } from '../types/Types';
 import { faker } from '@faker-js/faker';
+import { requireEnv } from '../config/env';
 
+// The scenario that successfully changes the account's password lives in
+// e2e/manual/password-change.spec.ts instead of here, so this file never
+// mutates the shared account's credentials - see that file for why.
 test.describe('Profile Tests', () => {
-    const userPassword = process.env.PASSWORD_VBET as string;
-    const userLogin = process.env.USERNAME_VBET as string;
-    const userPhone = process.env.PHONE_VBET as string;
-    const newUserPassword = process.env.NEW_PASSWORD_VBET as string;
+    const { USERNAME_VBET: userLogin, PASSWORD_VBET: userPassword } = requireEnv(
+        'USERNAME_VBET',
+        'PASSWORD_VBET',
+    );
+    const incorrectPassword = 'incorrectPassword';
 
-    // Tests failure to update profile data with an incorrect password
     test('fails to update profile data with incorrect password', async ({ profilePage }) => {
         const userData: ProfileData = {
             firstName: faker.person.firstName(),
@@ -18,12 +22,12 @@ test.describe('Profile Tests', () => {
             documentNumber: faker.string.numeric(7),
             taxNumber: faker.string.numeric(10),
         };
-        await profilePage.updateProfile(userData, 'incorrextPassword');
-        await profilePage.InvalidPasswordErrorChecker();
+        await profilePage.updateProfile(userData, incorrectPassword);
+        await profilePage.checkInvalidPasswordError();
     });
 
-    // Tests successful update of profile data with the correct password
     test('successfully updates profile data with correct password', async ({ profilePage }) => {
+        const { PHONE_VBET: userPhone } = requireEnv('PHONE_VBET');
         const userData: ProfileData = {
             firstName: faker.person.firstName(),
             lastName: faker.person.lastName(),
@@ -33,7 +37,7 @@ test.describe('Profile Tests', () => {
             taxNumber: faker.string.numeric(10),
         };
         await profilePage.updateProfile(userData, userPassword);
-        await profilePage.ProfileUpdateSuccessManager();
+        await profilePage.verifyProfileUpdateSuccess();
         const constDataUser = {
             email: userLogin,
             phone: userPhone,
@@ -41,39 +45,31 @@ test.describe('Profile Tests', () => {
         await profilePage.checkProfileData({ ...userData, ...constDataUser });
     });
 
-    // Verifies the functionality of the 'Verify Now' button
     test('checks functionality of the Verify Now button', async ({ profilePage }) => {
-        await profilePage.OpenVerificationPage();
-        await profilePage.CheckVerificationPage();
+        await profilePage.openVerificationPage();
+        await profilePage.checkVerificationPage();
     });
 
-    // Tests the functionality of the Deposit button
     test('checks functionality of the Deposit button', async ({ profilePage }) => {
-        await profilePage.OpenDepositePage();
-        await profilePage.CheckDepositePage();
+        await profilePage.openDepositPage();
+        await profilePage.checkDepositPage();
     });
 
-    // Tests the functionality of the Withdrawal button
     test('checks functionality of the Withdrawal button', async ({ profilePage }) => {
-        await profilePage.OpenWithdrawalPage();
-        await profilePage.CheckWithdrawalPage();
+        await profilePage.openWithdrawalPage();
+        await profilePage.checkWithdrawalPage();
     });
 
-    // Activates an incorrect promo code and checks for errors
     test('activates an incorrect promo code', async ({ profilePage }) => {
         await profilePage.typePromoCode('Wrong Promo');
-        await profilePage.PromoCodeErrorChecker();
+        await profilePage.checkPromoCodeError();
     });
 
-    // Attempts to change the password using an incorrect current password
+    // Uses NEW_PASSWORD_VBET only as form input - the current-password
+    // check fails first, so the account's password never actually changes.
     test('attempts to change password with incorrect current password', async ({ profilePage }) => {
-        await profilePage.UpdatePassword(newUserPassword, 'WrongPass12');
+        const { NEW_PASSWORD_VBET: newUserPassword } = requireEnv('NEW_PASSWORD_VBET');
+        await profilePage.updatePassword(newUserPassword, 'WrongPass12');
         await profilePage.checkErrorMessageCurrentPassword();
-    });
-
-    // Successfully changes the password
-    test('Successfully changes password', async ({ profilePage }) => {
-        await profilePage.UpdatePassword(newUserPassword, userPassword);
-        await profilePage.passwordUpdateSuccessManager();
     });
 });
