@@ -1,0 +1,65 @@
+name: Playwright Live (manual)
+
+# Runs the full suite against the real vbet.ua site. Not part of the
+# default CI gate - see README.md "External-system limitations".
+#
+# Requires:
+# - USERNAME_VBET / PASSWORD_VBET / PHONE_VBET repository secrets for
+#   a disposable test account;
+# - a runner whose IP the target site doesn't geo-block - confirmed
+#   while working on this repo that at least some cloud/datacenter IP
+#   ranges are rejected outright ("Your location doesn't allow you to
+#   consult this website"), which may include GitHub's own hosted
+#   runners. A failed run here can mean that, not a code regression.
+#
+# Trigger manually: Actions tab -> this workflow -> "Run workflow".
+
+on:
+    workflow_dispatch: {}
+
+jobs:
+    live:
+        name: Run the full Playwright suite
+        runs-on: ubuntu-24.04
+        timeout-minutes: 20
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v7
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v7
+              with:
+                  node-version: '22'
+                  cache: 'npm'
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Install Playwright browsers
+              run: npx playwright install --with-deps chromium
+
+            - name: Run suite
+              run: npm test
+              env:
+                  USERNAME_VBET: ${{ secrets.USERNAME_VBET }}
+                  PASSWORD_VBET: ${{ secrets.PASSWORD_VBET }}
+                  PHONE_VBET: ${{ secrets.PHONE_VBET }}
+
+            - name: Upload Playwright report
+              if: always()
+              uses: actions/upload-artifact@v7
+              with:
+                  name: playwright-report
+                  path: playwright-report/
+                  if-no-files-found: ignore
+                  retention-days: 14
+
+            - name: Upload traces and screenshots
+              if: failure()
+              uses: actions/upload-artifact@v7
+              with:
+                  name: playwright-traces
+                  path: test-results/
+                  if-no-files-found: ignore
+                  retention-days: 14
