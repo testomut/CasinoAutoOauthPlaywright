@@ -1,4 +1,3 @@
-// fixture.ts
 import { test as baseTest, Page } from '@playwright/test';
 import { RegistrationPage } from '../page-object/RegistrationPage';
 import { LoginPage } from '../page-object/LoginPage';

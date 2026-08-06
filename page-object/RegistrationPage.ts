@@ -1,4 +1,3 @@
-// RegistrationPage.ts
 import { expect, Page } from '@playwright/test';
 import { RegistrationData, FieldName, PasswordValidation } from '../types/Types';
 
@@ -9,14 +8,12 @@ export class RegistrationPage {
         this.page = page;
     }
 
-    // Opens the registration page and waits for the registration popup to become visible.
     async open() {
         await this.page.goto('/en/');
         await this.page.locator('.register').click();
         await this.page.locator('.entrance-popup-bc.register').waitFor();
     }
 
-    // Fills the registration form with data provided through the RegistrationData interface.
     async fillRegistrationForm(data: RegistrationData) {
         if (data.email !== undefined) {
             await this.page.fill('input[name="email"]', data.email);
@@ -33,7 +30,9 @@ export class RegistrationPage {
         if (data.promoCode !== undefined) {
             await this.page.fill('input[name="promo_code"]', data.promoCode);
         }
-        // Handles the checkbox interaction based on user agreement.
+        // The checkbox has no direct "checked" attribute exposed here, so its
+        // current state is inferred from whether the validation message is
+        // hidden, and only toggled if that differs from the desired state.
         const ifMarkedCheckbox = await this.page
             .locator('.checkbox-control-bc .form-control-message-holder-bc')
             .isHidden();
@@ -46,12 +45,10 @@ export class RegistrationPage {
         }
     }
 
-    // Clicks the submit button to attempt registering the user.
     async submit() {
         await this.page.click('button[type="submit"]');
     }
 
-    // Checks for error messages associated with specific fields in the registration form.
     async checkErrorMessage(field: FieldName, errorMessage: string) {
         let messageSelector = `.form-control-bc:has(input[name="${field}"]) .form-control-message-holder-bc .form-control-message-bc`;
         if (field === FieldName.PhoneNumber) {
@@ -67,7 +64,6 @@ export class RegistrationPage {
         await expect(this.page.locator(messageSelector)).toHaveText(errorMessage);
     }
 
-    // Validates password according to the specified criteria in the PasswordValidation interface.
     async checkPasswordValidation(verificationList: PasswordValidation) {
         const requiredClass = verificationList.isRequired ? '.bc-i-checked' : '.invalid';
         await expect(
@@ -131,7 +127,6 @@ export class RegistrationPage {
         ).toBeHidden();
     }
 
-    // Verifies that registration was successful by checking for a congratulatory message.
     async checkSuccessRegistration() {
         const locator = this.page.locator('.congrats-block');
         await expect(locator).toContainText('Great! You’re almost there.');

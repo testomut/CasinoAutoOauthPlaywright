@@ -8,15 +8,16 @@ test.describe('Authentication Tests', () => {
         'PASSWORD_VBET',
     );
 
-    test('Successful Login', async ({ loginPage }) => {
+    test('logs in successfully with valid credentials', async ({ loginPage }) => {
         await loginPage.login({
             login: userLogin,
             password: userPassword,
         });
         await loginPage.verifyLoginSuccess();
+        await loginPage.closePopUpCompleteVerification();
     });
 
-    test('Incorrect Password', async ({ loginPage }) => {
+    test('shows an error when the password is incorrect', async ({ loginPage }) => {
         await loginPage.login({
             login: userLogin,
             password: 'wrongPassword',
@@ -24,7 +25,7 @@ test.describe('Authentication Tests', () => {
         await loginPage.checkAuthenticationError();
     });
 
-    test('Nonexistent User', async ({ loginPage }) => {
+    test('shows an error when the account does not exist', async ({ loginPage }) => {
         await loginPage.login({
             login: 'notExistUser@test.com',
             password: userPassword,
@@ -32,7 +33,7 @@ test.describe('Authentication Tests', () => {
         await loginPage.checkAuthenticationError();
     });
 
-    test('Empty Fields (Login)', async ({ loginPage }) => {
+    test('requires an email address to log in', async ({ loginPage }) => {
         await loginPage.login({
             login: '',
             password: userPassword,
@@ -40,17 +41,19 @@ test.describe('Authentication Tests', () => {
         await loginPage.checkForInputErrors(FieldNameLogin.Email);
     });
 
-    test('Logout', async ({ loggedInPage }) => {
+    test('logs the user out and returns to the unauthenticated state', async ({ loggedInPage }) => {
         await loggedInPage.logOut();
         await loggedInPage.verifyLogout();
     });
 
-    test('Password Recovery', async ({ loginPage }) => {
+    test('confirms the password reset request', async ({ loginPage }) => {
         await loginPage.resetPassword(userLogin);
         await loginPage.verifyPasswordResetSuccess();
     });
 
-    test('Password Recovery (Nonexistent Email)', async ({ loginPage }) => {
+    test('does not reveal whether an email is registered during password reset', async ({
+        loginPage,
+    }) => {
         await loginPage.resetPassword('wrongEmail@qweqwe.com');
         await loginPage.verifyPasswordResetFailure();
     });

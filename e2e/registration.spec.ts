@@ -1,9 +1,8 @@
-// registrationTests.ts
 import { test } from '../fixtures/fixture';
 import { FieldName } from '../types/Types';
 
 test.describe('Registration Form Tests', () => {
-    test('Empty Email Field', async ({ regPage }) => {
+    test('requires an email address during registration', async ({ regPage }) => {
         await regPage.fillRegistrationForm({
             email: '',
             password: 'validPassword123',
@@ -23,7 +22,7 @@ test.describe('Registration Form Tests', () => {
         await regPage.checkErrorMessage(FieldName.Email, 'This field is required');
     });
 
-    test('Invalid Email Format', async ({ regPage }) => {
+    test('rejects an invalid email format during registration', async ({ regPage }) => {
         await regPage.fillRegistrationForm({
             email: 'test@',
             password: 'ValidPassword123!',
@@ -43,7 +42,7 @@ test.describe('Registration Form Tests', () => {
         await regPage.checkErrorMessage(FieldName.Email, 'Please enter a valid email address');
     });
 
-    test('Empty Password Field', async ({ regPage }) => {
+    test('requires a password during registration', async ({ regPage }) => {
         await regPage.fillRegistrationForm({
             email: 'user3@example.com',
             password: '',
@@ -63,7 +62,7 @@ test.describe('Registration Form Tests', () => {
         await regPage.checkErrorMessage(FieldName.RepeatPassword, 'This field is required');
     });
 
-    test('Password Too Short', async ({ regPage }) => {
+    test('rejects a password shorter than the minimum length', async ({ regPage }) => {
         await regPage.fillRegistrationForm({
             email: 'user3@example.com',
             password: 'short',
@@ -85,7 +84,7 @@ test.describe('Registration Form Tests', () => {
         );
     });
 
-    test('Password Exceeds Maximum Length', async ({ regPage }) => {
+    test('rejects a password exceeding the maximum length', async ({ regPage }) => {
         await regPage.fillRegistrationForm({
             email: 'user3@example.com',
             password: 'a'.repeat(51),
@@ -104,7 +103,9 @@ test.describe('Registration Form Tests', () => {
         await regPage.checkErrorMessage(FieldName.RepeatPassword, `Too long`);
     });
 
-    test('Password Without Digits', async ({ regPage }) => {
+    test('shows the live password-validation state when the password has no digit', async ({
+        regPage,
+    }) => {
         await regPage.fillRegistrationForm({
             email: 'user3@example.com',
             password: 'PasswordOnly',
@@ -121,7 +122,9 @@ test.describe('Registration Form Tests', () => {
         });
     });
 
-    test('Password Contains Spaces', async ({ regPage }) => {
+    test('shows the live password-validation state when the password contains spaces', async ({
+        regPage,
+    }) => {
         await regPage.fillRegistrationForm({
             email: 'user3@example.com',
             password: 'password with spaces',
@@ -138,7 +141,9 @@ test.describe('Registration Form Tests', () => {
         });
     });
 
-    test('Password Without Upper or Lowercase Letters', async ({ regPage }) => {
+    test('shows the live password-validation state when the password has no case variation', async ({
+        regPage,
+    }) => {
         await regPage.fillRegistrationForm({
             email: 'user3@example.com',
             password: 'password',
@@ -155,7 +160,7 @@ test.describe('Registration Form Tests', () => {
         });
     });
 
-    test('Confirm Password Mismatch', async ({ regPage }) => {
+    test('rejects mismatched password confirmation', async ({ regPage }) => {
         await regPage.fillRegistrationForm({
             email: 'user3@example.com',
             password: 'Password123!',
@@ -174,7 +179,7 @@ test.describe('Registration Form Tests', () => {
         await regPage.checkErrorMessage(FieldName.RepeatPassword, `Passwords don't match`);
     });
 
-    test('Invalid Phone Number', async ({ regPage }) => {
+    test('requires a valid phone number during registration', async ({ regPage }) => {
         await regPage.fillRegistrationForm({
             email: 'user3@example.com',
             password: 'ValidPassword123!',
@@ -219,7 +224,7 @@ test.describe('Registration Form Tests', () => {
     //     await regPage.checkErrorMessage(FieldName.PromoCode, 'Invalid promo code');
     // });
 
-    test('Unchecked Terms and Conditions', async ({ regPage }) => {
+    test('requires agreeing to the terms and conditions', async ({ regPage }) => {
         await regPage.fillRegistrationForm({
             email: 'user3@example.com',
             password: 'ValidPassword123!',
@@ -234,7 +239,9 @@ test.describe('Registration Form Tests', () => {
         );
     });
 
-    test('Password with Only Special Characters', async ({ regPage }) => {
+    test('shows the live password-validation state for a password with only special characters', async ({
+        regPage,
+    }) => {
         await regPage.fillRegistrationForm({
             email: 'user3@example.com',
             password: '!@#$%^&*()',
@@ -252,7 +259,7 @@ test.describe('Registration Form Tests', () => {
         });
     });
 
-    test('Cross-Site Scripting (XSS) Attack Prevention', async ({ regPage }) => {
+    test('rejects an XSS script tag in the email field', async ({ regPage }) => {
         await regPage.fillRegistrationForm({
             email: "<script>alert('test')</script>",
         });
@@ -313,7 +320,7 @@ test.describe('Registration Form Tests', () => {
     //     await regPage.checkSuccessRegistration();
     // });
 
-    test('JavaScript Injection in Email Field', async ({ regPage }) => {
+    test('rejects a JavaScript injection attempt in the email field', async ({ regPage }) => {
         await regPage.fillRegistrationForm({
             email: `" onmouseover="alert('JavaScript Executed!')`,
         });
