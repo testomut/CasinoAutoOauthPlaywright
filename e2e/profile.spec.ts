@@ -6,6 +6,7 @@ test.describe('Profile Tests', () => {
     const userPassword = process.env.PASSWORD_VBET as string;
     const userLogin = process.env.USERNAME_VBET as string;
     const userPhone = process.env.PHONE_VBET as string;
+    const newUserPassword = process.env.NEW_PASSWORD_VBET as string;
 
     // Tests failure to update profile data with an incorrect password
     test('fails to update profile data with incorrect password', async ({ profilePage }) => {
@@ -66,13 +67,13 @@ test.describe('Profile Tests', () => {
 
     // Attempts to change the password using an incorrect current password
     test('attempts to change password with incorrect current password', async ({ profilePage }) => {
-        await profilePage.UpdatePassword('REDACTED_PASSWORD', 'WrongPass12');
+        await profilePage.UpdatePassword(newUserPassword, 'WrongPass12');
         await profilePage.checkErrorMessageCurrentPassword();
     });
 
     // Successfully changes the password
     test('Successfully changes password', async ({ profilePage }) => {
-        await profilePage.UpdatePassword('REDACTED_PASSWORD', userPassword);
+        await profilePage.UpdatePassword(newUserPassword, userPassword);
         await profilePage.passwordUpdateSuccessManager();
     });
 });

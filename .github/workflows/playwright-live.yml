@@ -4,8 +4,8 @@ name: Playwright Live (manual)
 # default CI gate - see README.md "External-system limitations".
 #
 # Requires:
-# - USERNAME_VBET / PASSWORD_VBET / PHONE_VBET repository secrets for
-#   a disposable test account;
+# - USERNAME_VBET / PASSWORD_VBET / PHONE_VBET / NEW_PASSWORD_VBET
+#   repository secrets for a disposable test account;
 # - a runner whose IP the target site doesn't geo-block - confirmed
 #   while working on this repo that at least some cloud/datacenter IP
 #   ranges are rejected outright ("Your location doesn't allow you to
@@ -45,6 +45,7 @@ jobs:
                   USERNAME_VBET: ${{ secrets.USERNAME_VBET }}
                   PASSWORD_VBET: ${{ secrets.PASSWORD_VBET }}
                   PHONE_VBET: ${{ secrets.PHONE_VBET }}
+                  NEW_PASSWORD_VBET: ${{ secrets.NEW_PASSWORD_VBET }}
 
             - name: Upload Playwright report
               if: always()

@@ -47,7 +47,7 @@ npx playwright install chromium
 cp .env.example .env
 ```
 
-Fill in a disposable test account's `USERNAME_VBET`, `PASSWORD_VBET`, and `PHONE_VBET` locally. Never commit `.env` - it's gitignored, and `authentication.spec.ts`/`profile.spec.ts` won't run without it.
+Fill in a disposable test account's `USERNAME_VBET`, `PASSWORD_VBET`, and `PHONE_VBET` locally, plus `NEW_PASSWORD_VBET` (the value `profile.spec.ts`'s password-change tests set the account's password to). Never commit `.env` - it's gitignored, and `authentication.spec.ts`/`profile.spec.ts` won't run without it.
 
 ## Commands
 
