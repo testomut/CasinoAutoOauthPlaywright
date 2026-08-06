@@ -75,13 +75,13 @@ export class LoginPage {
     }
 
     // Checks for a successful password reset confirmation message.
-    async resetPasswordSuccessCheck() {
+    async verifyPasswordResetSuccess() {
         const locator = this.page.locator('.casino-popup-content');
         await expect(locator).toContainText('Password reset complete. Please check your email.');
     }
 
     // Checks if there are any visible error messages after a failed password reset attempt.
-    async resetPasswordFailureCheck() {
+    async verifyPasswordResetFailure() {
         await expect(this.page.locator('.form-control-message-bc')).toBeHidden();
     }
 }

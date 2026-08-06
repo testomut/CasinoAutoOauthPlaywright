@@ -6,11 +6,13 @@ import { ProfilePage } from '../../page-object/ProfilePage';
 // excluded from the default suite via --grep-invert in package.json.
 // Run only via `npm run test:password-change`, under supervision.
 //
-// Restoration always runs, even if the initial change fails, and is
-// re-verified explicitly rather than assumed. If restoration itself
-// fails, that's what gets thrown - treat it as a signal the account
-// needs manual recovery, not as an ordinary test failure. Neither
-// password is ever logged.
+// Restore the original password only after the temporary password
+// change was confirmed. If the change itself isn't confirmed, restoring
+// would use an unverified "current password" and risks making things
+// worse - so the original failure propagates as-is instead. If the
+// change succeeds but restoration fails, that's reported as its own
+// clear error, since the account may now be left on the temporary
+// password. Neither password is ever logged.
 //
 // This hasn't been run against the live site from this environment -
 // VBET geo-blocks it (see README.md "External-system limitations"), so
@@ -20,26 +22,30 @@ async function changePasswordAndRestore(
     originalPassword: string,
     temporaryPassword: string,
 ) {
-    let changeError: unknown;
-    try {
-        await profilePage.updatePassword(temporaryPassword, originalPassword);
-        await profilePage.verifyPasswordUpdateSuccess();
-    } catch (error) {
-        changeError = error;
-    }
+    // passwordChanged's value is provable at every point below - an
+    // unconfirmed change would already have thrown before it's read -
+    // but it's kept explicit (start false, flip true only after a
+    // verified change, gate restoration on it) so that invariant is
+    // visible in the code itself, not just in the control flow.
+    // eslint-disable-next-line no-useless-assignment
+    let passwordChanged = false;
 
-    try {
-        await profilePage.updatePassword(originalPassword, temporaryPassword);
-        await profilePage.verifyPasswordUpdateSuccess();
-    } catch {
-        throw new Error(
-            'Failed to restore the original password after the password-change test. ' +
-                'The account may still be on the temporary password and require manual recovery.',
-        );
-    }
+    // Not wrapped in try/catch: if this throws, the original error
+    // propagates untouched and restoration below is never attempted.
+    await profilePage.updatePassword(temporaryPassword, originalPassword);
+    await profilePage.verifyPasswordUpdateSuccess();
+    passwordChanged = true;
 
-    if (changeError) {
-        throw changeError;
+    if (passwordChanged) {
+        try {
+            await profilePage.updatePassword(originalPassword, temporaryPassword);
+            await profilePage.verifyPasswordUpdateSuccess();
+        } catch (restoreError) {
+            throw new Error(
+                'Password restoration failed. The test account may require manual recovery.',
+                { cause: restoreError },
+            );
+        }
     }
 }
 

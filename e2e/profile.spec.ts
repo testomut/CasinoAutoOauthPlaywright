@@ -70,6 +70,6 @@ test.describe('Profile Tests', () => {
     test('attempts to change password with incorrect current password', async ({ profilePage }) => {
         const { NEW_PASSWORD_VBET: newUserPassword } = requireEnv('NEW_PASSWORD_VBET');
         await profilePage.updatePassword(newUserPassword, 'WrongPass12');
-        await profilePage.checkErrorMessageCurrentPassword();
+        await profilePage.checkCurrentPasswordError();
     });
 });

@@ -47,11 +47,11 @@ test.describe('Authentication Tests', () => {
 
     test('Password Recovery', async ({ loginPage }) => {
         await loginPage.resetPassword(userLogin);
-        await loginPage.resetPasswordSuccessCheck();
+        await loginPage.verifyPasswordResetSuccess();
     });
 
     test('Password Recovery (Nonexistent Email)', async ({ loginPage }) => {
         await loginPage.resetPassword('wrongEmail@qweqwe.com');
-        await loginPage.resetPasswordFailureCheck();
+        await loginPage.verifyPasswordResetFailure();
     });
 });

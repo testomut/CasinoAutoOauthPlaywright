@@ -155,7 +155,7 @@ export class ProfilePage {
     }
 
     // Checks for error messages related to current password issues.
-    async checkErrorMessageCurrentPassword() {
+    async checkCurrentPasswordError() {
         const locator = this.page.locator('.form-control-message-bc');
         await expect(locator).toContainText('The old password is incorrect.');
     }
