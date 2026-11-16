@@ -1,5 +1,3 @@
-> **This project has moved to [testomut/playwright](https://github.com/testomut/playwright/tree/main/js/CasinoAutoOauthPlaywright)**, together with its full history. This repository is archived and kept read-only so existing links keep working.
-
 # Authentication Flow Testing with Playwright
 
 This project demonstrates how I organize Playwright tests for registration, authentication, logout, and profile-management flows. It combines Page Objects, fixtures, generated test data, test-case documentation, and published Playwright reports.
